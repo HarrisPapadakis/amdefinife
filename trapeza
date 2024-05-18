@@ -1,0 +1,172 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Εξυπηρετητής: localhost
+-- Χρόνος δημιουργίας: 12 Απρ 2024 στις 19:22:51
+-- Έκδοση διακομιστή: 10.4.32-MariaDB
+-- Έκδοση PHP: 8.0.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Βάση δεδομένων: `Τράπεζα`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Δάνειο`
+--
+
+CREATE TABLE `Δάνειο` (
+  `Αρ_Δανείου` int(11) NOT NULL,
+  `Ποσό` float NOT NULL,
+  `ΑΔΤ` varchar(8) NOT NULL,
+  `Όνομα_Υπ` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Διατηρεί`
+--
+
+CREATE TABLE `Διατηρεί` (
+  `ΑΔΤ` varchar(8) NOT NULL,
+  `ΑΡ_ΛΟΓΑΡΙΑΣΜΟΥ` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Κεφάλαια`
+--
+
+CREATE TABLE `Κεφάλαια` (
+  `Όνομα` varchar(20) NOT NULL,
+  `Κεφάλαιο` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Λογαριασμός`
+--
+
+CREATE TABLE `Λογαριασμός` (
+  `Αρ_Λογαριασμού` varchar(25) NOT NULL,
+  `Υπόλοιπο` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Πελάτης`
+--
+
+CREATE TABLE `Πελάτης` (
+  `ΑΔΤ` varchar(8) NOT NULL,
+  `Όνομα` varchar(30) NOT NULL,
+  `Πόλη` varchar(20) NOT NULL,
+  `Οδός` varchar(30) NOT NULL,
+  `Όνομα_ΥΠ` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `Υποκατάστημα`
+--
+
+CREATE TABLE `Υποκατάστημα` (
+  `Όνομα` varchar(20) NOT NULL,
+  `Πόλη` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Ευρετήρια για άχρηστους πίνακες
+--
+
+--
+-- Ευρετήρια για πίνακα `Δάνειο`
+--
+ALTER TABLE `Δάνειο`
+  ADD PRIMARY KEY (`Αρ_Δανείου`),
+  ADD KEY `Όνομα_Υπ` (`Όνομα_Υπ`),
+  ADD KEY `ΑΔΤ` (`ΑΔΤ`);
+
+--
+-- Ευρετήρια για πίνακα `Διατηρεί`
+--
+ALTER TABLE `Διατηρεί`
+  ADD PRIMARY KEY (`ΑΔΤ`,`ΑΡ_ΛΟΓΑΡΙΑΣΜΟΥ`),
+  ADD KEY `ΑΡ_ΛΟΓΑΡΙΑΣΜΟΥ` (`ΑΡ_ΛΟΓΑΡΙΑΣΜΟΥ`);
+
+--
+-- Ευρετήρια για πίνακα `Κεφάλαια`
+--
+ALTER TABLE `Κεφάλαια`
+  ADD KEY `Όνομα` (`Όνομα`);
+
+--
+-- Ευρετήρια για πίνακα `Λογαριασμός`
+--
+ALTER TABLE `Λογαριασμός`
+  ADD PRIMARY KEY (`Αρ_Λογαριασμού`);
+
+--
+-- Ευρετήρια για πίνακα `Πελάτης`
+--
+ALTER TABLE `Πελάτης`
+  ADD PRIMARY KEY (`ΑΔΤ`),
+  ADD KEY `Πελάτης_ibfk_1` (`Όνομα_ΥΠ`);
+
+--
+-- Ευρετήρια για πίνακα `Υποκατάστημα`
+--
+ALTER TABLE `Υποκατάστημα`
+  ADD PRIMARY KEY (`Όνομα`);
+
+--
+-- Περιορισμοί για άχρηστους πίνακες
+--
+
+--
+-- Περιορισμοί για πίνακα `Δάνειο`
+--
+ALTER TABLE `Δάνειο`
+  ADD CONSTRAINT `Δάνειο_ibfk_1` FOREIGN KEY (`Όνομα_Υπ`) REFERENCES `Υποκατάστημα` (`Όνομα`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `Δάνειο_ibfk_2` FOREIGN KEY (`ΑΔΤ`) REFERENCES `Πελάτης` (`ΑΔΤ`) ON DELETE CASCADE;
+
+--
+-- Περιορισμοί για πίνακα `Διατηρεί`
+--
+ALTER TABLE `Διατηρεί`
+  ADD CONSTRAINT `Διατηρεί_ibfk_1` FOREIGN KEY (`ΑΔΤ`) REFERENCES `Πελάτης` (`ΑΔΤ`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `Διατηρεί_ibfk_2` FOREIGN KEY (`ΑΡ_ΛΟΓΑΡΙΑΣΜΟΥ`) REFERENCES `Λογαριασμός` (`Αρ_Λογαριασμού`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Περιορισμοί για πίνακα `Κεφάλαια`
+--
+ALTER TABLE `Κεφάλαια`
+  ADD CONSTRAINT `Κεφάλαια_ibfk_1` FOREIGN KEY (`Όνομα`) REFERENCES `Υποκατάστημα` (`Όνομα`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Περιορισμοί για πίνακα `Πελάτης`
+--
+ALTER TABLE `Πελάτης`
+  ADD CONSTRAINT `Πελάτης_ibfk_1` FOREIGN KEY (`Όνομα_ΥΠ`) REFERENCES `Υποκατάστημα` (`Όνομα`) ON DELETE NO ACTION ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
